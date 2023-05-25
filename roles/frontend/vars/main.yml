@@ -1,0 +1,17 @@
+---
+packages:
+  - apache2
+  - mysql-client
+  - php
+fepath: /tmp/fefiles
+feobject: aws-jesi.dsantos-frontend.html.zip
+webpath: /var/www/html
+feuser:
+  - apple
+  - banana
+  - carrot
+secfiles:
+  - name: /etc/shadow
+    perm: '0400'
+  - name: /var/log/syslog
+    perm: '0600'

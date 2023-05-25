@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+  - name: include the common role for instance
+    include_role:
+      name: common
+    when: ansible_role is defined
+  - name: include the frontend role for instance
+    include_role:
+      name: frontend
+    when: ansible_role == 'frontend'
+  - name: include the backend role for instance
+    include_role:
+      name: backend
+    when: ansible_role == 'backend'

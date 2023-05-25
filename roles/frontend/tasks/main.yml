@@ -1,0 +1,61 @@
+---
+
+- name: Install necessary Packages
+  apt:
+    name: "{{ packages }}"
+
+- name: Create frontend directory
+  file:
+    path: "{{ fepath }}"
+    state: directory
+    mode: 0755
+
+- name: Pull the frontend files
+  aws_s3:
+    bucket: skillup-s3-jesidsantos
+    object: "{{ feobject }}"
+    dest: "{{ fepath }}/{{ feobject }}"
+    mode: get
+
+- name: Extract frontend files to html
+  unarchive:
+   src: "{{ fepath }}/{{ feobject }}"
+   dest: "{{ webpath }}"
+
+- name: modify frontend file
+  lineinfile:
+   path: "{{ webpath }}/index.html"
+   regexp: '^My Private'
+   line: 'My Private IP address is: {{ ansible_default_ipv4.address }}'
+
+- name: Setup httpd service
+  systemd:
+    enabled: yes
+    daemon_reload: yes
+    name: sshd
+    state: restarted
+
+- name: Cleanup temporary temp files
+  file:
+    path: "{{ fepath }}"
+    state: absent
+
+- name: Ensure there is no test user
+  user:
+    name: test
+    state: absent
+    remove: yes
+
+- name: Create users
+  user:
+    name: "{{ item }}" 
+    shell: /bin/bash
+  with_items: "{{ feuser }}"
+
+- name: Set file permissions to shadow and /var/log
+  file:
+    name: "{{ item.name }}"
+    mode: "{{ item.perm }}"
+  with_items: "{{ secfiles }}"
+
+  

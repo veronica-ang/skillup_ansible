@@ -1,0 +1,8 @@
+---
+packages:
+  - wget
+  - unzip
+  - curl
+  - git
+  - jq
+sshdconf: /etc/ssh/sshd_config

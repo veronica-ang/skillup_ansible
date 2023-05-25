@@ -1,0 +1,15 @@
+---
+- name: restart sshd config
+  systemd:
+    enabled: yes
+    daemon_reload: yes
+    name: sshd
+    state: restarted
+  listen: sshd_restart
+
+- name: restart-rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+  listen: rsyslog_restart
+

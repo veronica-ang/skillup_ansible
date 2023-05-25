@@ -1,0 +1,38 @@
+---
+- name: Backup existing sshd config
+  copy:
+    src: "{{ sshdconf }}"
+    dest: "{{ sshdconf }}.bak_{{ ansible_date_time.date }}"
+    
+- name: Update sshd port to 6522
+  lineinfile:
+    dest: "{{ sshdconf }}"
+    regexp: '^#Port'
+    line: 'Port 6522'
+    state: present
+  notify: sshd_restart
+  
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  register: update_out
+
+- name: Perform Ubuntu System Upgrade
+  apt:
+    upgrade: dist
+    force_apt_get: yes
+    autoremove: yes
+  when: update_out.changed
+
+
+
+- name: Upload APT rsyslog script
+  copy:
+    src: aptx
+    dest: /etc/logrotate.d/
+  notify: rsyslog_restart
+
+- name: Install necessary Packages
+  apt:
+    name: "{{ packages }}"
+

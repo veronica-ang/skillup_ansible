@@ -1,0 +1,6 @@
+---
+packages:
+  - apache2
+bepath: /tmp/befiles
+beobject: aws-jesi.dsantos-backend.html.zip
+webpath: /var/www/html
